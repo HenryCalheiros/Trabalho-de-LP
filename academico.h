@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 typedef struct
 {
@@ -9,6 +10,13 @@ typedef struct
     char Disciplinas[40], Situacao[30], Turma[30];
 } registro;
 
+typedef struct
+{
+    int ID;
+    char nome[40];
+} Disciplinas;
+
+// Função para buscar nota de um Aluno
 int VisualizarNotas()
 {
 
@@ -59,6 +67,7 @@ int VisualizarNotas()
     return 0;
 }
 
+// Função para adicionar nota de um Aluno
 void AdicionarNotas(registro *aluno)
 {
 
@@ -103,6 +112,7 @@ void AdicionarNotas(registro *aluno)
     fclose(file);
 }
 
+// Função para adicionar um Aluno
 void AdicionarAluno(registro *aluno)
 {
     // aqui vai AdicionarAluno no arquivo
@@ -121,3 +131,93 @@ void AdicionarAluno(registro *aluno)
     fprintf(file, "\nRA: %d,\n Disciplina: %s\n", aluno->RA, aluno->Disciplinas);
     fclose(file);
 }
+
+// Função para verificar a existência de uma disciplina digitada
+bool DisciplinaExiste(char nomeDigitado[40])
+{
+    Disciplinas *disciplina;
+
+    FILE *file = fopen("disciplinas.txt", "r");
+   
+    bool existe = false;
+
+    // loop para percorrer todos os registros no arquivo
+    while (fscanf(file, "\nID: %d,\nNome: %[^\n]", &disciplina->ID, disciplina->nome) == 2) 
+    {
+        
+       if(strcmp(disciplina->nome, nomeDigitado) == 0) // se o nome digitado, já estiver nos arquivos
+       {
+         existe = true; // disciplina existente encontrada
+         break;
+       }
+    }
+
+    fclose(file);
+    return existe;
+}
+
+// Função para gerar um id auto-increment para os registros
+int gerarId()
+{
+    Disciplinas *disciplina;
+
+    int maior = 0;
+    FILE *file = fopen("disciplinas.txt", "r");
+
+    while (fscanf(file, "\nID: %d,\nNome: %[^\n]", &disciplina->ID, disciplina->nome) == 2) 
+    {
+       
+        if(disciplina->ID > maior)
+        {
+            maior = disciplina->ID;
+        }
+    }
+
+    fclose(file);
+    return maior;
+}
+
+// Função para adicionar uma disciplina
+void AdicionarDisciplina(Disciplinas *disciplina)
+{
+    
+    FILE *file = fopen("disciplinas.txt", "a"); // a, para abrir somente para gravação e manter o que já está escrito
+
+    printf("Informe o nome da disciplina que deseja adicionar: ");
+    scanf("%s",disciplina->nome);
+
+    // passa o nome digitado pelo usuário como parametro
+    if(DisciplinaExiste(disciplina->nome) == false) // se a função retornar false o registro não existe
+    {
+        disciplina->ID = gerarId() + 1;
+        fprintf(file, "\nID: %d,\nNome: %s", disciplina->ID, disciplina->nome);
+        printf("\nDisciplina cadastrada com sucesso! \n");
+    }
+    else
+    {
+        printf("Disciplina já registrada!! \n");
+    }
+
+    
+    fclose(file);
+
+}
+
+// Função para exibir disciplinas
+void ConsultarDisciplina(Disciplinas *disciplina)
+{
+    FILE *file = fopen("disciplinas.txt", "r"); // r, para abrir somente para leitura e manter o que já está escrito
+    printf(" _______________________________________\n");
+    printf("|---------TABELA DE DISCIPLINAS---------|\n");
+    printf("|          I D             DISCIPLINA   |\n");
+
+    //loop para acessar os registros no arquivo
+    while (fscanf(file, "\nID: %d,\nNome: %[^\n]", &disciplina->ID, disciplina->nome) == 2) 
+    {
+        printf("|  %10d   %18s      | \n", disciplina->ID, disciplina->nome);
+    }
+    printf(" _______________________________________\n");
+
+
+}
+
